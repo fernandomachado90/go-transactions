@@ -2,11 +2,7 @@ package main
 
 import "log"
 
-func Hello() bool {
+func Main() bool {
 	log.Print("Hello world")
 	return true
-}
-
-func main() {
-	Hello()
 }

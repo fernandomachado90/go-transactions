@@ -13,7 +13,7 @@ func TestHello(t *testing.T) {
 			//given
 
 			// when
-			expected := Hello()
+			expected := Main()
 
 			// then
 			assert.True(t, expected)

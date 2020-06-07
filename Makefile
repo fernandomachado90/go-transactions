@@ -1,5 +1,5 @@
 BINARY_NAME    = bin
-SERVER_DIR     := ./main
+SERVER_DIR     := ./api
 
 .SILENT:
 .DEFAULT_GOAL := help
