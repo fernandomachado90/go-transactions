@@ -42,7 +42,7 @@ func TestCreateAccount(t *testing.T) {
 			}
 			db := new(dbMock)
 			db.On("CreateAccount", input).Return(rand.Int(), nil)
-			accountManager := AccountManager{db: db}
+			accountManager := NewAccountManager(db)
 
 			// when
 			output, err := accountManager.Create(input)
@@ -59,7 +59,7 @@ func TestCreateAccount(t *testing.T) {
 			}
 			db := new(dbMock)
 			db.On("CreateAccount", input).Return(0, errors.New("error"))
-			accountManager := AccountManager{db: db}
+			accountManager := NewAccountManager(db)
 
 			// when
 			output, err := accountManager.Create(input)
@@ -84,7 +84,7 @@ func TestFindAccount(t *testing.T) {
 			input := rand.Int()
 			db := new(dbMock)
 			db.On("FindAccount", input).Return(nil)
-			accountManager := AccountManager{db: db}
+			accountManager := NewAccountManager(db)
 
 			// when
 			output, err := accountManager.Find(input)
@@ -98,7 +98,7 @@ func TestFindAccount(t *testing.T) {
 			input := rand.Int()
 			db := new(dbMock)
 			db.On("FindAccount", input).Return(errors.New("error"))
-			accountManager := AccountManager{db: db}
+			accountManager := NewAccountManager(db)
 
 			// when
 			output, err := accountManager.Find(input)
