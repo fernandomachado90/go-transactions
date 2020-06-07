@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestNewAccount(t *testing.T) {
@@ -23,8 +22,7 @@ func TestNewAccount(t *testing.T) {
 			}
 
 			// then
-			assert.NotEmpty(t, account.ID)
-			assert.NotEmpty(t, account.DocumentNumber)
+			assert.NotEmpty(t, account)
 		},
 	}
 
@@ -116,10 +114,6 @@ func TestFindAccount(t *testing.T) {
 			run(t)
 		})
 	}
-}
-
-type dbMock struct {
-	mock.Mock
 }
 
 func (m *dbMock) CreateAccount(account Account) (Account, error) {
