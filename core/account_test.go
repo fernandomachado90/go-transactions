@@ -35,7 +35,6 @@ func TestNewAccount(t *testing.T) {
 }
 
 func TestCreateAccount(t *testing.T) {
-
 	tests := map[string]func(*testing.T){
 		"Should create account successfully": func(t *testing.T) {
 			//given
@@ -78,6 +77,45 @@ func TestCreateAccount(t *testing.T) {
 	}
 }
 
+func TestFindAccount(t *testing.T) {
+	tests := map[string]func(*testing.T){
+		"Should find account successfully": func(t *testing.T) {
+			//given
+			input := rand.Int()
+			db := new(dbMock)
+			db.On("FindAccount", input).Return(nil)
+			accountManager := AccountManager{db: db}
+
+			// when
+			output, err := accountManager.Find(input)
+
+			// then
+			assert.NotEmpty(t, output.ID)
+			assert.NoError(t, err)
+		},
+		"Should not find account and return error": func(t *testing.T) {
+			//given
+			input := rand.Int()
+			db := new(dbMock)
+			db.On("FindAccount", input).Return(errors.New("error"))
+			accountManager := AccountManager{db: db}
+
+			// when
+			output, err := accountManager.Find(input)
+
+			// then
+			assert.Empty(t, output)
+			assert.Error(t, err)
+		},
+	}
+
+	for name, run := range tests {
+		t.Run(name, func(t *testing.T) {
+			run(t)
+		})
+	}
+}
+
 type dbMock struct {
 	mock.Mock
 }
@@ -93,4 +131,15 @@ func (m *dbMock) CreateAccount(account Account) (Account, error) {
 
 	account.ID = id
 	return account, nil
+}
+
+func (m *dbMock) FindAccount(id int) (Account, error) {
+	args := m.Called(id)
+	err := args.Error(0)
+
+	if err != nil {
+		return Account{}, err
+	}
+
+	return Account{ID: id}, nil
 }

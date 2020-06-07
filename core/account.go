@@ -8,11 +8,21 @@ type Account struct {
 type AccountManager struct {
 	db interface {
 		CreateAccount(Account) (Account, error)
+		FindAccount(id int) (Account, error)
 	}
 }
 
 func (m *AccountManager) Create(account Account) (Account, error) {
 	account, err := m.db.CreateAccount(account)
+	if err != nil {
+		return Account{}, err
+	}
+
+	return account, nil
+}
+
+func (m *AccountManager) Find(id int) (Account, error) {
+	account, err := m.db.FindAccount(id)
 	if err != nil {
 		return Account{}, err
 	}
