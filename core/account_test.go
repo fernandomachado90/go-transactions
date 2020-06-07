@@ -23,7 +23,8 @@ func TestNewAccount(t *testing.T) {
 			}
 
 			// then
-			assert.NotEmpty(t, account)
+			assert.NotEmpty(t, account.ID)
+			assert.NotEmpty(t, account.DocumentNumber)
 		},
 	}
 
@@ -50,6 +51,7 @@ func TestCreateAccount(t *testing.T) {
 
 			// then
 			assert.NotEmpty(t, output.ID)
+			assert.Equal(t, input.DocumentNumber, output.DocumentNumber)
 			assert.NoError(t, err)
 		},
 		"Should not create account and return error": func(t *testing.T) {
@@ -65,7 +67,7 @@ func TestCreateAccount(t *testing.T) {
 			output, err := accountManager.Create(input)
 
 			// then
-			assert.Empty(t, output.ID)
+			assert.Empty(t, output)
 			assert.Error(t, err)
 		},
 	}
