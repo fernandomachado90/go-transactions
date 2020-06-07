@@ -5,7 +5,7 @@ import (
 )
 
 func (api *API) handleHealthCheck() http.HandlerFunc {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
+	return func(w http.ResponseWriter, r *http.Request) {
+		api.respond(w, r, "healthy", http.StatusOK)
 	}
 }
