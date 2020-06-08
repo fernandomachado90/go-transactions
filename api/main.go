@@ -19,6 +19,10 @@ func main() {
 	log.Printf("Starting server @%s", address)
 
 	db, err := database.NewDatabase()
+	defer func(){
+		_ = db.Close()
+	}()
+
 	if err != nil {
 		log.Fatalf("Failed to initalize Database. %s", err)
 	}

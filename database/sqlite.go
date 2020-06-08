@@ -17,8 +17,15 @@ func NewDatabase() (*database, error) {
 		return nil, err
 	}
 
-	query := `CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, document_number CHAR(13) NOT NULL);`
-	_, err = db.Exec(query)
+	schema := `
+		CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, document_number CHAR(13) NOT NULL);
+
+		CREATE TABLE operations(id INTEGER PRIMARY KEY AUTOINCREMENT, description CHAR(42) NOT NULL);
+		INSERT INTO operations(description) VALUES ('COMPRA A VISTA');
+		INSERT INTO operations(description) VALUES ('COMPRA PARCELADA');
+		INSERT INTO operations(description) VALUES ('SAQUE');
+		INSERT INTO operations(description) VALUES ('PAGAMENTO');`
+	_, err = db.Exec(schema)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +35,6 @@ func NewDatabase() (*database, error) {
 
 func (db *database) CreateAccount(account core.Account) (core.Account, error) {
 	query := "INSERT INTO accounts(document_number) VALUES (?)"
-
 	result, err := db.Exec(query, account.DocumentNumber)
 	if err != nil {
 		return core.Account{}, err

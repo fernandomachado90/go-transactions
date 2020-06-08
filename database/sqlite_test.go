@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewRepository(t *testing.T) {
+func TestNewDatabase(t *testing.T) {
 	tests := map[string]func(*testing.T){
 		"Should create a new database": func(t *testing.T) {
 			// when
