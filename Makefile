@@ -7,10 +7,10 @@ SERVER_DIR     := ./api
 .PHONY: help
 help:
 	$(info Available Commands:)
-	$(info -> setup                 install dependencies modules)
+	$(info -> setup                   install dependencies modules)
 	$(info -> build                   build binary)
 	$(info -> test                    run tests)
-	$(info -> run                     run api)
+	$(info -> run [-port=<number>]    run api)
 	$(info -> format                  format go files)
 
 .PHONY: setup

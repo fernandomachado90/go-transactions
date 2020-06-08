@@ -13,7 +13,7 @@ Build the source files into an executable binary named `bin`.
 Execute all available tests.
 
 ### `make run`
-Run the application locally.
+Run the application locally. You can optionally inform a custom `-port<number>`.
 
 ### `make format`
 Format all files using `go fmt`.
