@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"math"
 	"time"
 )
 
@@ -21,16 +22,26 @@ func NewTransactionManager(db db) *TransactionManager {
 	return &TransactionManager{db}
 }
 
-func (m *TransactionManager) Create(transaction Transaction) (Transaction, error) {
-	if transaction.AccountID == 0 || transaction.OperationID == 0 {
+func (m *TransactionManager) Create(t Transaction) (Transaction, error) {
+	if t.AccountID == 0 || t.OperationID == 0 {
 		return Transaction{}, errors.New("missing required attribute")
 	}
-	transaction.EventDate = time.Now()
 
-	transaction, err := m.db.CreateTransaction(transaction)
+	op, err := m.db.FindOperation(t.OperationID)
+	if err != nil {
+		return Transaction{}, errors.New("operation not found")
+	}
+	math.Abs(t.Amount)
+	if !op.Credit {
+		t.Amount = t.Amount * -1
+	}
+
+	t.EventDate = time.Now()
+
+	t, err = m.db.CreateTransaction(t)
 	if err != nil {
 		return Transaction{}, err
 	}
 
-	return transaction, nil
+	return t, nil
 }

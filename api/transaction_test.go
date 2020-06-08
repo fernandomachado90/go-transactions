@@ -21,6 +21,7 @@ func TestHandleCreateTransaction(t *testing.T) {
 	tests := map[string]func(*testing.T){
 		"Should reach Create Transaction endpoint successfully": func(t *testing.T) {
 			// mock
+			db.On("FindOperation", 4).Return(true, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(1, nil)
 

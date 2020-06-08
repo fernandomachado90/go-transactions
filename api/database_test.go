@@ -45,3 +45,14 @@ func (m *dbMock) CreateTransaction(transaction core.Transaction) (core.Transacti
 	transaction.ID = id
 	return transaction, nil
 }
+
+func (m *dbMock) FindOperation(id int) (core.Operation, error) {
+	args := m.Called(id)
+	credit := args.Bool(0)
+	err := args.Error(1)
+	if err != nil {
+		return core.Operation{}, err
+	}
+
+	return core.Operation{ID: id, Credit: credit}, nil
+}

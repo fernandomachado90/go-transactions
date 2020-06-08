@@ -16,7 +16,7 @@ func TestNewTransaction(t *testing.T) {
 			id := 1
 			accountID := 1
 			operationID := 1
-			amount := -0.20
+			amount := 0.20
 			eventDate := time.Now()
 
 			// when
@@ -42,7 +42,7 @@ func TestNewTransaction(t *testing.T) {
 
 func TestCreateTransaction(t *testing.T) {
 	tests := map[string]func(*testing.T){
-		"Should create transaction successfully": func(t *testing.T) {
+		"Should create credit transaction successfully": func(t *testing.T) {
 			//given
 			input := Transaction{
 				AccountID:   2,
@@ -50,6 +50,7 @@ func TestCreateTransaction(t *testing.T) {
 				Amount:      123.45,
 			}
 			db := new(dbMock)
+			db.On("FindOperation", input.OperationID).Return(true, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(1, nil)
 			transactionManager := NewTransactionManager(db)
@@ -62,6 +63,30 @@ func TestCreateTransaction(t *testing.T) {
 			assert.Equal(t, input.AccountID, output.AccountID)
 			assert.Equal(t, input.OperationID, output.OperationID)
 			assert.Equal(t, input.Amount, output.Amount)
+			assert.NotEmpty(t, output.EventDate)
+			assert.NoError(t, err)
+		},
+		"Should create debit transaction successfully": func(t *testing.T) {
+			//given
+			input := Transaction{
+				AccountID:   2,
+				OperationID: 3,
+				Amount:      123.45,
+			}
+			db := new(dbMock)
+			db.On("FindOperation", input.OperationID).Return(false, nil)
+			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
+				Return(1, nil)
+			transactionManager := NewTransactionManager(db)
+
+			// when
+			output, err := transactionManager.Create(input)
+
+			// then
+			assert.Equal(t, 1, output.ID)
+			assert.Equal(t, input.AccountID, output.AccountID)
+			assert.Equal(t, input.OperationID, output.OperationID)
+			assert.Equal(t, input.Amount, -output.Amount)
 			assert.NotEmpty(t, output.EventDate)
 			assert.NoError(t, err)
 		},
@@ -86,6 +111,7 @@ func TestCreateTransaction(t *testing.T) {
 				Amount:      123.45,
 			}
 			db := new(dbMock)
+			db.On("FindOperation", input.OperationID).Return(true, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(0, errors.New("database error"))
 			transactionManager := NewTransactionManager(db)

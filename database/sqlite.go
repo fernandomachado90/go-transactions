@@ -22,11 +22,13 @@ func NewDatabase() (*database, error) {
 
 		CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, document_number TEXT NOT NULL);
 
-		CREATE TABLE operations(id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL);
-		INSERT INTO operations(description) VALUES ('COMPRA A VISTA');
-		INSERT INTO operations(description) VALUES ('COMPRA PARCELADA');
-		INSERT INTO operations(description) VALUES ('SAQUE');
-		INSERT INTO operations(description) VALUES ('PAGAMENTO');
+		CREATE TABLE operations(id INTEGER PRIMARY KEY AUTOINCREMENT, 
+								description TEXT NOT NULL,
+								credit INTEGER NOT NULL);
+		INSERT INTO operations(description, credit) VALUES ('COMPRA A VISTA', 0);
+		INSERT INTO operations(description, credit) VALUES ('COMPRA PARCELADA', 0);
+		INSERT INTO operations(description, credit) VALUES ('SAQUE', 0);
+		INSERT INTO operations(description, credit) VALUES ('PAGAMENTO', 1);
 		
 		CREATE TABLE transactions(id INTEGER PRIMARY KEY AUTOINCREMENT, 
 									account_id INTEGER NOT NULL,
@@ -79,4 +81,18 @@ func (db *database) CreateTransaction(t core.Transaction) (core.Transaction, err
 	lastId, _ := result.LastInsertId()
 	t.ID = int(lastId)
 	return t, nil
+}
+
+func (db *database) FindOperation(id int) (core.Operation, error) {
+	query := "SELECT id, credit FROM operations WHERE id = ?"
+
+	result := db.QueryRow(query, id)
+
+	operation := core.Operation{}
+	err := result.Scan(&operation.ID, &operation.Credit)
+	if err != nil {
+		return core.Operation{}, err
+	}
+
+	return operation, nil
 }

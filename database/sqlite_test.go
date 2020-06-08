@@ -60,7 +60,7 @@ func TestFindAccount(t *testing.T) {
 	db, _ := NewDatabase()
 
 	tests := map[string]func(*testing.T){
-		"Should find a account": func(t *testing.T) {
+		"Should find account": func(t *testing.T) {
 			// given
 			input := core.Account{
 				DocumentNumber: "1234567890",
@@ -75,7 +75,7 @@ func TestFindAccount(t *testing.T) {
 			assert.Equal(t, account.ID, output.ID)
 			assert.Equal(t, input.DocumentNumber, output.DocumentNumber)
 		},
-		"Should not find a account": func(t *testing.T) {
+		"Should not find account": func(t *testing.T) {
 			// when
 			_, err := db.FindAccount(0)
 
@@ -123,7 +123,7 @@ func TestCreateTransaction(t *testing.T) {
 			// given
 			input := core.Transaction{
 				AccountID:   1,
-				OperationID: -777,
+				OperationID: -1,
 				Amount:      123.45,
 				EventDate:   time.Now(),
 			}
@@ -134,6 +134,63 @@ func TestCreateTransaction(t *testing.T) {
 			// then
 			assert.EqualError(t, err, "FOREIGN KEY constraint failed")
 			assert.Empty(t, output)
+		},
+	}
+
+	for name, run := range tests {
+		t.Run(name, func(t *testing.T) {
+			run(t)
+		})
+	}
+}
+
+func TestFindOperation(t *testing.T) {
+	// setup
+	db, _ := NewDatabase()
+
+	tests := map[string]func(*testing.T){
+		"Should find COMPRA A VISTA operation": func(t *testing.T) {
+			// when
+			output, err := db.FindOperation(1)
+
+			// then
+			assert.NoError(t, err)
+			assert.Equal(t, output.ID, output.ID)
+			assert.Equal(t, false, output.Credit)
+		},
+		"Should find COMPRA PARCELADA operation": func(t *testing.T) {
+			// when
+			output, err := db.FindOperation(2)
+
+			// then
+			assert.NoError(t, err)
+			assert.Equal(t, output.ID, output.ID)
+			assert.Equal(t, false, output.Credit)
+		},
+		"Should find SAQUE operation": func(t *testing.T) {
+			// when
+			output, err := db.FindOperation(3)
+
+			// then
+			assert.NoError(t, err)
+			assert.Equal(t, output.ID, output.ID)
+			assert.Equal(t, false, output.Credit)
+		},
+		"Should find PAGAMENTO operation": func(t *testing.T) {
+			// when
+			output, err := db.FindOperation(4)
+
+			// then
+			assert.NoError(t, err)
+			assert.Equal(t, output.ID, output.ID)
+			assert.Equal(t, true, output.Credit)
+		},
+		"Should not find operation": func(t *testing.T) {
+			// when
+			_, err := db.FindAccount(0)
+
+			// then
+			assert.EqualError(t, err, "sql: no rows in result set")
 		},
 	}
 

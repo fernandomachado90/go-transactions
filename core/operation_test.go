@@ -13,11 +13,13 @@ func TestNewOperation(t *testing.T) {
 			//given
 			id := 4
 			description := "PAGAMENTO"
+			credit := true
 
 			// when
 			operation := &Operation{
 				ID:          id,
 				Description: description,
+				Credit:      credit,
 			}
 
 			// then
