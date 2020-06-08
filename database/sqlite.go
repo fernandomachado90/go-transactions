@@ -7,11 +7,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type database struct {
+type sqlite struct {
 	*sql.DB
 }
 
-func NewDatabase() (*database, error) {
+func NewDatabase() (*sqlite, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
@@ -42,10 +42,10 @@ func NewDatabase() (*database, error) {
 		return nil, err
 	}
 
-	return &database{db}, nil
+	return &sqlite{db}, nil
 }
 
-func (db *database) CreateAccount(account core.Account) (core.Account, error) {
+func (db *sqlite) CreateAccount(account core.Account) (core.Account, error) {
 	query := "INSERT INTO accounts(document_number) VALUES (?)"
 	result, err := db.Exec(query, account.DocumentNumber)
 	if err != nil {
@@ -57,7 +57,7 @@ func (db *database) CreateAccount(account core.Account) (core.Account, error) {
 	return account, nil
 }
 
-func (db *database) FindAccount(id int) (core.Account, error) {
+func (db *sqlite) FindAccount(id int) (core.Account, error) {
 	query := "SELECT id, document_number FROM accounts WHERE id = ?"
 
 	result := db.QueryRow(query, id)
@@ -71,7 +71,7 @@ func (db *database) FindAccount(id int) (core.Account, error) {
 	return account, nil
 }
 
-func (db *database) CreateTransaction(t core.Transaction) (core.Transaction, error) {
+func (db *sqlite) CreateTransaction(t core.Transaction) (core.Transaction, error) {
 	query := "INSERT INTO transactions(account_id, operation_id, amount, event_date) VALUES (?, ?, ?, ?)"
 	result, err := db.Exec(query, t.AccountID, t.OperationID, t.Amount, t.EventDate)
 	if err != nil {
@@ -83,7 +83,7 @@ func (db *database) CreateTransaction(t core.Transaction) (core.Transaction, err
 	return t, nil
 }
 
-func (db *database) FindOperation(id int) (core.Operation, error) {
+func (db *sqlite) FindOperation(id int) (core.Operation, error) {
 	query := "SELECT id, credit FROM operations WHERE id = ?"
 
 	result := db.QueryRow(query, id)

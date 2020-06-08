@@ -9,8 +9,8 @@ type dbMock struct {
 	mock.Mock
 }
 
-func (m *dbMock) CreateAccount(account core.Account) (core.Account, error) {
-	args := m.Called(account)
+func (db *dbMock) CreateAccount(account core.Account) (core.Account, error) {
+	args := db.Called(account)
 	id := args.Int(0)
 	err := args.Error(1)
 
@@ -22,8 +22,8 @@ func (m *dbMock) CreateAccount(account core.Account) (core.Account, error) {
 	return account, nil
 }
 
-func (m *dbMock) FindAccount(id int) (core.Account, error) {
-	args := m.Called(id)
+func (db *dbMock) FindAccount(id int) (core.Account, error) {
+	args := db.Called(id)
 	doc := args.String(0)
 	err := args.Error(1)
 	if err != nil {
@@ -33,8 +33,8 @@ func (m *dbMock) FindAccount(id int) (core.Account, error) {
 	return core.Account{ID: id, DocumentNumber: doc}, nil
 }
 
-func (m *dbMock) CreateTransaction(transaction core.Transaction) (core.Transaction, error) {
-	args := m.Called(transaction)
+func (db *dbMock) CreateTransaction(transaction core.Transaction) (core.Transaction, error) {
+	args := db.Called(transaction)
 	id := args.Int(0)
 	err := args.Error(1)
 
@@ -46,8 +46,8 @@ func (m *dbMock) CreateTransaction(transaction core.Transaction) (core.Transacti
 	return transaction, nil
 }
 
-func (m *dbMock) FindOperation(id int) (core.Operation, error) {
-	args := m.Called(id)
+func (db *dbMock) FindOperation(id int) (core.Operation, error) {
+	args := db.Called(id)
 	credit := args.Bool(0)
 	err := args.Error(1)
 	if err != nil {
