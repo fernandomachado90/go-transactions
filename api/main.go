@@ -19,7 +19,7 @@ func main() {
 	log.Printf("Starting server @%s", address)
 
 	db, err := database.NewDatabase()
-	defer func(){
+	defer func() {
 		_ = db.Close()
 	}()
 

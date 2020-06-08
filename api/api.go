@@ -29,7 +29,6 @@ func (api *API) respond(w http.ResponseWriter, r *http.Request, status int, data
 	if data == nil {
 		return
 	}
-
 	buffer := &bytes.Buffer{}
 	encoder := json.NewEncoder(buffer)
 	if err := encoder.Encode(data); err != nil {

@@ -22,7 +22,6 @@ func TestHandleHealthCheck(t *testing.T) {
 			// then
 			status := recorder.Result().StatusCode
 			response := recorder.Body.String()
-
 			assert.Equal(t, http.StatusOK, status)
 			assert.Empty(t, response)
 		},

@@ -7,11 +7,12 @@ import (
 	"github.com/fernandomachado90/go-transactions/core"
 )
 
-func (api *API) handleCreateAccount() http.HandlerFunc {
-	type request struct {
-		DocumentNumber string `json:"document_number"`
-	}
+type payload struct {
+	ID             int    `json:"account_id"`
+	DocumentNumber string `json:"document_number"`
+}
 
+func (api *API) handleCreateAccount() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		defer func() {
@@ -20,20 +21,24 @@ func (api *API) handleCreateAccount() http.HandlerFunc {
 			}
 		}()
 
-		req := new(request)
+		req := new(payload)
 		err = json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
 			return
 		}
 
-		account := core.Account{
+		request := core.Account{
 			DocumentNumber: req.DocumentNumber,
 		}
-		account, err = api.accountManager.Create(account)
+		account, err := api.accountManager.Create(request)
 		if err != nil {
 			return
 		}
 
-		api.respond(w, r, http.StatusCreated, account)
+		response := payload{
+			ID:             account.ID,
+			DocumentNumber: account.DocumentNumber,
+		}
+		api.respond(w, r, http.StatusCreated, response)
 	}
 }
