@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestNewTransaction(t *testing.T) {
@@ -50,8 +51,9 @@ func TestCreateTransaction(t *testing.T) {
 				Amount:      123.45,
 			}
 			db := new(dbMock)
-			db.On("CreateTransaction", input).Return(rand.Int(), nil)
-			transactionManager := TransactionManager{db: db}
+			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
+				Return(rand.Int(), nil)
+			transactionManager := NewTransactionManager(db)
 
 			// when
 			output, err := transactionManager.Create(input)
@@ -64,7 +66,20 @@ func TestCreateTransaction(t *testing.T) {
 			assert.Equal(t, input.Amount, output.Amount)
 			assert.NoError(t, err)
 		},
-		"Should not create transaction and return error": func(t *testing.T) {
+		"Should not create account because of missing required attribute": func(t *testing.T) {
+			//given
+			input := Transaction{}
+			db := new(dbMock)
+			transactionManager := NewTransactionManager(db)
+
+			// when
+			output, err := transactionManager.Create(input)
+
+			// then
+			assert.Empty(t, output)
+			assert.EqualError(t, err, "missing required attribute")
+		},
+		"Should not create transaction because of database error": func(t *testing.T) {
 			//given
 			input := Transaction{
 				AccountID:   1,
@@ -72,8 +87,9 @@ func TestCreateTransaction(t *testing.T) {
 				Amount:      123.45,
 			}
 			db := new(dbMock)
-			db.On("CreateTransaction", input).Return(0, errors.New("error"))
-			transactionManager := TransactionManager{db: db}
+			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
+				Return(0, errors.New("database error"))
+			transactionManager := NewTransactionManager(db)
 
 			// when
 			output, err := transactionManager.Create(input)
