@@ -20,7 +20,7 @@ install:
 
 .PHONY: build
 build:
-	go build -v $(ARGS) -o $(BINARY_NAME) $(SERVER_DIR)
+	go build -v -o $(BINARY_NAME) $(SERVER_DIR)
 	chmod +x $(BINARY_NAME)
 
 .PHONY: test
