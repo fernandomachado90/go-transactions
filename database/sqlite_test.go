@@ -44,7 +44,6 @@ func TestCreateAccount(t *testing.T) {
 			assert.NoError(t, err)
 			assert.NotEmpty(t, output.ID)
 			assert.Equal(t, input.DocumentNumber, output.DocumentNumber)
-
 		},
 	}
 
@@ -60,7 +59,7 @@ func TestFindAccount(t *testing.T) {
 	db, _ := NewDatabase()
 
 	tests := map[string]func(*testing.T){
-		"Should find a new account": func(t *testing.T) {
+		"Should find a account": func(t *testing.T) {
 			// given
 			input := core.Account{
 				DocumentNumber: "1234567890",
@@ -74,6 +73,13 @@ func TestFindAccount(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, account.ID, output.ID)
 			assert.Equal(t, input.DocumentNumber, output.DocumentNumber)
+		},
+		"Should not find a account": func(t *testing.T) {
+			// when
+			_, err := db.FindAccount(0)
+
+			// then
+			assert.EqualError(t, err, "sql: no rows in result set")
 		},
 	}
 
