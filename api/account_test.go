@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -16,10 +15,10 @@ func TestHandleCreateAccount(t *testing.T) {
 	// setup
 	db := new(dbMock)
 	accountManager := core.NewAccountManager(db)
-	server := API{accountManager}
+	server := API{accountManager: accountManager}
 
 	tests := map[string]func(*testing.T){
-		"Should reach Create Account endpoint with success": func(t *testing.T) {
+		"Should reach Create Account endpoint successfully": func(t *testing.T) {
 			// mock
 			input := core.Account{
 				DocumentNumber: "12345678900",
@@ -68,10 +67,10 @@ func TestHandleFindAccount(t *testing.T) {
 	// setup
 	db := new(dbMock)
 	accountManager := core.NewAccountManager(db)
-	server := API{accountManager}
+	server := API{accountManager: accountManager}
 
 	tests := map[string]func(*testing.T){
-		"Should reach Find Account endpoint with success": func(t *testing.T) {
+		"Should reach Find Account endpoint successfully": func(t *testing.T) {
 			// mock
 			db.On("FindAccount", 1).Return("12345678900", nil)
 
@@ -111,8 +110,4 @@ func TestHandleFindAccount(t *testing.T) {
 			run(t)
 		})
 	}
-}
-
-func withRouteParams(r *http.Request, urlParams chi.RouteParams) *http.Request {
-	return r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, &chi.Context{URLParams: urlParams}))
 }

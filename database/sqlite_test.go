@@ -113,7 +113,7 @@ func TestCreateTransaction(t *testing.T) {
 
 			// then
 			assert.NoError(t, err)
-			assert.NotEmpty(t, output.ID)
+			assert.Equal(t, 1, output.ID)
 			assert.Equal(t, input.AccountID, output.AccountID)
 			assert.Equal(t, input.OperationID, output.OperationID)
 			assert.Equal(t, input.Amount, output.Amount)

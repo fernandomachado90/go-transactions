@@ -2,7 +2,6 @@ package core
 
 import (
 	"errors"
-	"math/rand"
 	"testing"
 	"time"
 
@@ -46,24 +45,24 @@ func TestCreateTransaction(t *testing.T) {
 		"Should create transaction successfully": func(t *testing.T) {
 			//given
 			input := Transaction{
-				AccountID:   1,
+				AccountID:   2,
 				OperationID: 4,
 				Amount:      123.45,
 			}
 			db := new(dbMock)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
-				Return(rand.Int(), nil)
+				Return(1, nil)
 			transactionManager := NewTransactionManager(db)
 
 			// when
 			output, err := transactionManager.Create(input)
 
 			// then
-			assert.NotEmpty(t, output.ID)
-			assert.NotEmpty(t, output.EventDate)
+			assert.Equal(t, 1, output.ID)
 			assert.Equal(t, input.AccountID, output.AccountID)
 			assert.Equal(t, input.OperationID, output.OperationID)
 			assert.Equal(t, input.Amount, output.Amount)
+			assert.NotEmpty(t, output.EventDate)
 			assert.NoError(t, err)
 		},
 		"Should not create account because of missing required attribute": func(t *testing.T) {

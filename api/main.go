@@ -25,7 +25,9 @@ func newServer() *http.Server {
 
 	log.Printf("Starting server @%s", address)
 	accountManager := core.NewAccountManager(db)
-	api := API{accountManager}
+	transactionManager := core.NewTransactionManager(db)
+
+	api := API{accountManager, transactionManager}
 	server := &http.Server{
 		Addr:    address,
 		Handler: api.Routes(),

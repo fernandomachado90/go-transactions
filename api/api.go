@@ -10,7 +10,8 @@ import (
 )
 
 type API struct {
-	accountManager *core.AccountManager
+	accountManager     *core.AccountManager
+	transactionManager *core.TransactionManager
 }
 
 func (api *API) Routes() *chi.Mux {
@@ -19,6 +20,7 @@ func (api *API) Routes() *chi.Mux {
 	mux.Get("/healthcheck", api.handleHealthCheck())
 	mux.Post("/accounts", api.handleCreateAccount())
 	mux.Get("/accounts/{id}", api.handleFindAccount())
+	mux.Post("/transactions", api.handleCreateTransaction())
 
 	return mux
 }

@@ -53,7 +53,7 @@ Creates a transaction with the provided attributes.
 }`
 ###### response
 `{
-    "id": 1,
+    "transaction_id": 1,
     "account_id": 1,
     "operation_type_id": 4,
     "amount": 123.45

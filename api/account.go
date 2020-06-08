@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type payload struct {
+type accountJSON struct {
 	ID             int    `json:"account_id"`
 	DocumentNumber string `json:"document_number"`
 }
@@ -24,21 +24,21 @@ func (api *API) handleCreateAccount() http.HandlerFunc {
 			}
 		}()
 
-		p := new(payload)
-		err = json.NewDecoder(r.Body).Decode(p)
+		payload := new(accountJSON)
+		err = json.NewDecoder(r.Body).Decode(payload)
 		if err != nil {
 			return
 		}
 
 		request := core.Account{
-			DocumentNumber: p.DocumentNumber,
+			DocumentNumber: payload.DocumentNumber,
 		}
 		account, err := api.accountManager.Create(request)
 		if err != nil {
 			return
 		}
 
-		response := payload{
+		response := accountJSON{
 			ID:             account.ID,
 			DocumentNumber: account.DocumentNumber,
 		}
@@ -65,7 +65,7 @@ func (api *API) handleFindAccount() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		response := payload{
+		response := accountJSON{
 			ID:             account.ID,
 			DocumentNumber: account.DocumentNumber,
 		}

@@ -10,7 +10,7 @@ import (
 
 func TestHandleHealthCheck(t *testing.T) {
 	tests := map[string]func(*testing.T){
-		"Should reach healthcheck endpoint with success": func(t *testing.T) {
+		"Should reach healthcheck endpoint successfully": func(t *testing.T) {
 			// given
 			server := API{}
 			request := httptest.NewRequest(http.MethodGet, "/healthcheck", nil)
