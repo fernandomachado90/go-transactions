@@ -8,10 +8,11 @@ SERVER_DIR     := ./api
 help:
 	$(info Available Commands:)
 	$(info -> setup                   install dependencies modules)
-	$(info -> build                   build binary)
-	$(info -> test                    run tests)
-	$(info -> run [-port=<number>]    run api)
 	$(info -> format                  format go files)
+	$(info -> build                   build binary)
+	$(info -> test                    executes tests)
+	$(info -> run                     starts server)
+	$(info -> docker                  starts server on a docker image)
 
 .PHONY: setup
 install:
@@ -29,6 +30,11 @@ test:
 .PHONY: run
 run:
 	go run $(SERVER_DIR)
+
+.PHONY: docker
+docker:
+	docker build -t go-transactions $(SERVER_DIR)
+	docker run --publish 8080:8080 --name go-transactions --rm go-transactions
 
 .PHONY: format
 format:

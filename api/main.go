@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
 
@@ -9,14 +8,9 @@ import (
 	"github.com/fernandomachado90/go-transactions/database"
 )
 
-var (
-	port = flag.String("port", "8888", "Informs the port where the API will be made available.")
-)
+const address = ":8080"
 
 func newServer() *http.Server {
-	flag.Parse()
-	address := ":" + *port
-
 	log.Printf("Starting database")
 	db, err := database.NewDatabase()
 	if err != nil {

@@ -16,7 +16,10 @@ Build source files into an executable binary named `bin`.
 Execute all available tests.
 
 ### `make run`
-Run the application locally. You can optionally inform a custom `-port<number>`.
+Starts the server application locally on port `8080`.
+
+### `make docker`
+Starts the server application on a `Docker` image on port `8080`.
 
 ## Endpoints
 
