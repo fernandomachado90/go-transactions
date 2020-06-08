@@ -11,11 +11,6 @@ type AccountManager struct {
 	db
 }
 
-type db interface {
-	CreateAccount(Account) (Account, error)
-	FindAccount(id int) (Account, error)
-}
-
 func NewAccountManager(db db) *AccountManager {
 	return &AccountManager{db}
 }

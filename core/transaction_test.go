@@ -90,17 +90,3 @@ func TestCreateTransaction(t *testing.T) {
 		})
 	}
 }
-
-func (m *dbMock) CreateTransaction(transaction Transaction) (Transaction, error) {
-	args := m.Called(transaction)
-	id := args.Int(0)
-	err := args.Error(1)
-
-	if err != nil {
-		return Transaction{}, err
-	}
-
-	transaction.ID = id
-	transaction.EventDate = time.Now()
-	return transaction, nil
-}

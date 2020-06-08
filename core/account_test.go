@@ -3,6 +3,7 @@ package core
 import (
 	"errors"
 	"math/rand"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -96,7 +97,7 @@ func TestFindAccount(t *testing.T) {
 			//given
 			input := rand.Int()
 			db := new(dbMock)
-			db.On("FindAccount", input).Return(nil)
+			db.On("FindAccount", input).Return(strconv.Itoa(rand.Int()), nil)
 			accountManager := NewAccountManager(db)
 
 			// when
@@ -104,13 +105,14 @@ func TestFindAccount(t *testing.T) {
 
 			// then
 			assert.NotEmpty(t, output.ID)
+			assert.NotEmpty(t, output.DocumentNumber)
 			assert.NoError(t, err)
 		},
 		"Should not find account and return error": func(t *testing.T) {
 			//given
 			input := rand.Int()
 			db := new(dbMock)
-			db.On("FindAccount", input).Return(errors.New("error"))
+			db.On("FindAccount", input).Return(strconv.Itoa(rand.Int()), errors.New("error"))
 			accountManager := NewAccountManager(db)
 
 			// when
@@ -127,28 +129,4 @@ func TestFindAccount(t *testing.T) {
 			run(t)
 		})
 	}
-}
-
-func (m *dbMock) CreateAccount(account Account) (Account, error) {
-	args := m.Called(account)
-	id := args.Int(0)
-	err := args.Error(1)
-
-	if err != nil {
-		return Account{}, err
-	}
-
-	account.ID = id
-	return account, nil
-}
-
-func (m *dbMock) FindAccount(id int) (Account, error) {
-	args := m.Called(id)
-	err := args.Error(0)
-
-	if err != nil {
-		return Account{}, err
-	}
-
-	return Account{ID: id}, nil
 }
