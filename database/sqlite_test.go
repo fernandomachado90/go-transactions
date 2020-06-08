@@ -2,6 +2,7 @@ package database
 
 import (
 	"testing"
+	"time"
 
 	"github.com/fernandomachado90/go-transactions/core"
 	"github.com/stretchr/testify/assert"
@@ -80,6 +81,59 @@ func TestFindAccount(t *testing.T) {
 
 			// then
 			assert.EqualError(t, err, "sql: no rows in result set")
+		},
+	}
+
+	for name, run := range tests {
+		t.Run(name, func(t *testing.T) {
+			run(t)
+		})
+	}
+}
+
+func TestCreateTransaction(t *testing.T) {
+	// setup
+	db, _ := NewDatabase()
+	_, _ = db.CreateAccount(core.Account{
+		DocumentNumber: "1234567890",
+	})
+
+	tests := map[string]func(*testing.T){
+		"Should create a new transaction": func(t *testing.T) {
+			// given
+			input := core.Transaction{
+				AccountID:   1,
+				OperationID: 4,
+				Amount:      123.45,
+				EventDate:   time.Now(),
+			}
+
+			// when
+			output, err := db.CreateTransaction(input)
+
+			// then
+			assert.NoError(t, err)
+			assert.NotEmpty(t, output.ID)
+			assert.Equal(t, input.AccountID, output.AccountID)
+			assert.Equal(t, input.OperationID, output.OperationID)
+			assert.Equal(t, input.Amount, output.Amount)
+			assert.Equal(t, input.EventDate, output.EventDate)
+		},
+		"Should not create a new transaction due to foreign key constraint": func(t *testing.T) {
+			// given
+			input := core.Transaction{
+				AccountID:   1,
+				OperationID: -777,
+				Amount:      123.45,
+				EventDate:   time.Now(),
+			}
+
+			// when
+			output, err := db.CreateTransaction(input)
+
+			// then
+			assert.EqualError(t, err, "FOREIGN KEY constraint failed")
+			assert.Empty(t, output)
 		},
 	}
 

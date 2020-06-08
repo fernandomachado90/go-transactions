@@ -18,13 +18,23 @@ func NewDatabase() (*database, error) {
 	}
 
 	schema := `
-		CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, document_number CHAR(13) NOT NULL);
+		PRAGMA foreign_keys = ON;
 
-		CREATE TABLE operations(id INTEGER PRIMARY KEY AUTOINCREMENT, description CHAR(42) NOT NULL);
+		CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, document_number TEXT NOT NULL);
+
+		CREATE TABLE operations(id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT NOT NULL);
 		INSERT INTO operations(description) VALUES ('COMPRA A VISTA');
 		INSERT INTO operations(description) VALUES ('COMPRA PARCELADA');
 		INSERT INTO operations(description) VALUES ('SAQUE');
-		INSERT INTO operations(description) VALUES ('PAGAMENTO');`
+		INSERT INTO operations(description) VALUES ('PAGAMENTO');
+		
+		CREATE TABLE transactions(id INTEGER PRIMARY KEY AUTOINCREMENT, 
+									account_id INTEGER NOT NULL,
+									operation_id INTEGER NOT NULL,
+									amount REAL NOT NULL,
+									event_date TEXT NOT NULL,
+									FOREIGN KEY(account_id) REFERENCES accounts(id),
+									FOREIGN KEY(operation_id) REFERENCES operations(id));`
 	_, err = db.Exec(schema)
 	if err != nil {
 		return nil, err
@@ -39,8 +49,8 @@ func (db *database) CreateAccount(account core.Account) (core.Account, error) {
 	if err != nil {
 		return core.Account{}, err
 	}
-	lastId, _ := result.LastInsertId()
 
+	lastId, _ := result.LastInsertId()
 	account.ID = int(lastId)
 	return account, nil
 }
@@ -59,6 +69,14 @@ func (db *database) FindAccount(id int) (core.Account, error) {
 	return account, nil
 }
 
-func (db *database) CreateTransaction(transaction core.Transaction) (core.Transaction, error) {
-	return core.Transaction{}, nil
+func (db *database) CreateTransaction(t core.Transaction) (core.Transaction, error) {
+	query := "INSERT INTO transactions(account_id, operation_id, amount, event_date) VALUES (?, ?, ?, ?)"
+	result, err := db.Exec(query, t.AccountID, t.OperationID, t.Amount, t.EventDate)
+	if err != nil {
+		return core.Transaction{}, err
+	}
+
+	lastId, _ := result.LastInsertId()
+	t.ID = int(lastId)
+	return t, nil
 }
