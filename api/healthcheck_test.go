@@ -9,15 +9,28 @@ import (
 )
 
 func TestHandleHealthCheck(t *testing.T) {
-	// given
-	server := &API{}
-	request := httptest.NewRequest(http.MethodGet, "/healthcheck", nil)
-	recorder := httptest.NewRecorder()
+	tests := map[string]func(*testing.T){
+		"Should reach healthcheck endpoint with success": func(t *testing.T) {
+			// given
+			server := API{}
+			request := httptest.NewRequest(http.MethodGet, "/healthcheck", nil)
+			recorder := httptest.NewRecorder()
 
-	// when
-	server.handleHealthCheck()(recorder, request)
+			// when
+			server.handleHealthCheck()(recorder, request)
 
-	// then
-	response := recorder.Result()
-	assert.Equal(t, http.StatusOK, response.StatusCode)
+			// then
+			status := recorder.Result().StatusCode
+			response := recorder.Body.String()
+
+			assert.Equal(t, http.StatusOK, status)
+			assert.Empty(t, response)
+		},
+	}
+
+	for name, run := range tests {
+		t.Run(name, func(t *testing.T) {
+			run(t)
+		})
+	}
 }
