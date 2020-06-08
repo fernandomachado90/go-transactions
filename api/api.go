@@ -10,12 +10,14 @@ import (
 )
 
 type API struct {
+	accountManager *core.AccountManager
 }
 
 func (api *API) Routes() *chi.Mux {
 	mux := chi.NewRouter()
 
 	mux.Get("/healthcheck", api.handleHealthCheck())
+	mux.Post("/accounts", api.handleCreateAccount())
 
 	return mux
 }

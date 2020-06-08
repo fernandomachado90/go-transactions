@@ -4,6 +4,9 @@ import (
 	"flag"
 	"log"
 	"net/http"
+
+	"github.com/fernandomachado90/go-transactions/core"
+	"github.com/fernandomachado90/go-transactions/database"
 )
 
 var (
@@ -13,11 +16,17 @@ var (
 func main() {
 	flag.Parse()
 	address := ":" + *port
-	log.Printf("starting server @%s", address)
+	log.Printf("Starting server @%s", address)
 
-	server := &API{}
+	db, err := database.NewDatabase()
+	if err != nil {
+		log.Fatalf("Failed to initalize Database. %s", err)
+	}
+
+	accountManager := core.NewAccountManager(db)
+	server := API{accountManager}
 
 	if err := http.ListenAndServe(address, server.Routes()); err != nil {
-		log.Fatalf("failed to start server. %s", err)
+		log.Fatalf("Failed to start server. %s", err)
 	}
 }
