@@ -52,13 +52,10 @@ func TestCreateAccount(t *testing.T) {
 			assert.Equal(t, input.DocumentNumber, output.DocumentNumber)
 			assert.NoError(t, err)
 		},
-		"Should not create account and return error": func(t *testing.T) {
+		"Should not create account because of missing required attribute": func(t *testing.T) {
 			//given
-			input := Account{
-				DocumentNumber: "1234567890",
-			}
+			input := Account{}
 			db := new(dbMock)
-			db.On("CreateAccount", input).Return(0, errors.New("error"))
 			accountManager := NewAccountManager(db)
 
 			// when
@@ -66,7 +63,23 @@ func TestCreateAccount(t *testing.T) {
 
 			// then
 			assert.Empty(t, output)
-			assert.Error(t, err)
+			assert.EqualError(t, err, "missing required attribute")
+		},
+		"Should not create account because of database error": func(t *testing.T) {
+			//given
+			input := Account{
+				DocumentNumber: "1234567890",
+			}
+			db := new(dbMock)
+			db.On("CreateAccount", input).Return(0, errors.New("database error"))
+			accountManager := NewAccountManager(db)
+
+			// when
+			output, err := accountManager.Create(input)
+
+			// then
+			assert.Empty(t, output)
+			assert.EqualError(t, err, "database error")
 		},
 	}
 

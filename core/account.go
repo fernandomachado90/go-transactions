@@ -1,5 +1,7 @@
 package core
 
+import "errors"
+
 type Account struct {
 	ID             int
 	DocumentNumber string
@@ -19,6 +21,10 @@ func NewAccountManager(db db) *AccountManager {
 }
 
 func (m *AccountManager) Create(account Account) (Account, error) {
+	if account.DocumentNumber == "" {
+		return Account{}, errors.New("missing required attribute")
+	}
+
 	account, err := m.db.CreateAccount(account)
 	if err != nil {
 		return Account{}, err
