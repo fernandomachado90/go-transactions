@@ -24,7 +24,7 @@ build:
 
 .PHONY: test
 test:
-	go test ./... -v -race -covermode=atomic
+	go test ./... -v -covermode=atomic
 
 .PHONY: run
 run:

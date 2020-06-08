@@ -13,24 +13,29 @@ var (
 	port = flag.String("port", "8888", "Informs the port where the API will be made available.")
 )
 
-func main() {
+func newServer() *http.Server {
 	flag.Parse()
 	address := ":" + *port
-	log.Printf("Starting server @%s", address)
 
+	log.Printf("Starting database")
 	db, err := database.NewDatabase()
-	defer func() {
-		_ = db.Close()
-	}()
-
 	if err != nil {
 		log.Fatalf("Failed to initalize Database. %s", err)
 	}
 
+	log.Printf("Starting server @%s", address)
 	accountManager := core.NewAccountManager(db)
-	server := API{accountManager}
+	api := API{accountManager}
+	server := &http.Server{
+		Addr:    address,
+		Handler: api.Routes(),
+	}
+	return server
+}
 
-	if err := http.ListenAndServe(address, server.Routes()); err != nil {
+func main() {
+	server := newServer()
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to start server. %s", err)
 	}
 }
