@@ -20,6 +20,7 @@ func (api *API) handleCreateAccount() http.HandlerFunc {
 		var err error
 		defer func() {
 			if err != nil {
+				log.Println(err)
 				api.respond(w, r, http.StatusInternalServerError, "An error occurred when creating the account.")
 			}
 		}()

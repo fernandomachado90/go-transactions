@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -21,6 +22,7 @@ func (api *API) handleCreateTransaction() http.HandlerFunc {
 		var err error
 		defer func() {
 			if err != nil {
+				log.Println(err)
 				api.respond(w, r, http.StatusInternalServerError, "An error occurred when creating the transaction.")
 			}
 		}()
