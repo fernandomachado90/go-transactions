@@ -2,9 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/fernandomachado90/go-transactions/core"
+	"github.com/go-chi/chi"
 )
 
 type payload struct {
@@ -21,14 +24,14 @@ func (api *API) handleCreateAccount() http.HandlerFunc {
 			}
 		}()
 
-		req := new(payload)
-		err = json.NewDecoder(r.Body).Decode(req)
+		p := new(payload)
+		err = json.NewDecoder(r.Body).Decode(p)
 		if err != nil {
 			return
 		}
 
 		request := core.Account{
-			DocumentNumber: req.DocumentNumber,
+			DocumentNumber: p.DocumentNumber,
 		}
 		account, err := api.accountManager.Create(request)
 		if err != nil {
@@ -40,5 +43,32 @@ func (api *API) handleCreateAccount() http.HandlerFunc {
 			DocumentNumber: account.DocumentNumber,
 		}
 		api.respond(w, r, http.StatusCreated, response)
+	}
+}
+
+func (api *API) handleFindAccount() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		defer func() {
+			if err != nil {
+				log.Println(err)
+				api.respond(w, r, http.StatusInternalServerError, "An error occurred when finding the account.")
+			}
+		}()
+
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			return
+		}
+
+		account, err := api.accountManager.Find(id)
+		if err != nil {
+			return
+		}
+		response := payload{
+			ID:             account.ID,
+			DocumentNumber: account.DocumentNumber,
+		}
+		api.respond(w, r, http.StatusFound, response)
 	}
 }

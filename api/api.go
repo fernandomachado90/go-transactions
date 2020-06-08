@@ -18,6 +18,7 @@ func (api *API) Routes() *chi.Mux {
 
 	mux.Get("/healthcheck", api.handleHealthCheck())
 	mux.Post("/accounts", api.handleCreateAccount())
+	mux.Get("/accounts/{id}", api.handleFindAccount())
 
 	return mux
 }
