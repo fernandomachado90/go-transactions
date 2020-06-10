@@ -1,5 +1,5 @@
-BINARY_NAME    = bin
-SERVER_DIR     := ./api
+BINARY_NAME    = api
+API_DIR     := ./api
 
 .SILENT:
 .DEFAULT_GOAL := help
@@ -22,7 +22,7 @@ install:
 
 .PHONY: build
 build:
-	go build -v -o $(BINARY_NAME) $(SERVER_DIR)
+	go build -v -o $(BINARY_NAME) $(API_DIR)
 	chmod +x $(BINARY_NAME)
 
 .PHONY: test
@@ -31,11 +31,11 @@ test:
 
 .PHONY: run
 run:
-	go run $(SERVER_DIR)
+	go run $(API_DIR)
 
 .PHONY: docker
 docker:
-	docker build -t go-transactions $(SERVER_DIR)
+	docker build --build-arg root_dir=$(API_DIR) -t go-transactions .
 	docker run --publish 8080:8080 --name go-transactions --rm go-transactions
 
 .PHONY: format

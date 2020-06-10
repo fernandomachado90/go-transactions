@@ -1,5 +1,5 @@
 # Binaries for programs and plugins
-bin
+api
 
 # Local development configs
 .tool-versions
