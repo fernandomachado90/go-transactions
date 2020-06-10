@@ -16,6 +16,8 @@ help:
 
 .PHONY: setup
 install:
+	go get -d -v ./...
+	go install -v ./...
 	go mod tidy -v
 
 .PHONY: build

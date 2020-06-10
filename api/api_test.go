@@ -15,7 +15,6 @@ import (
 func TestAPI_404(t *testing.T) {
 	server := newServer()
 	go server.ListenAndServe()
-	defer server.Close()
 
 	// given
 	request, _ := http.NewRequest(http.MethodGet, "/unknown-url", nil)
@@ -34,7 +33,6 @@ func TestAPI_404(t *testing.T) {
 func TestAPI_GET_HealthCheck(t *testing.T) {
 	server := newServer()
 	go server.ListenAndServe()
-	defer server.Close()
 
 	// given
 	request, _ := http.NewRequest(http.MethodGet, "/healthcheck", nil)
@@ -53,7 +51,6 @@ func TestAPI_GET_HealthCheck(t *testing.T) {
 func TestAPI_POST_Accounts(t *testing.T) {
 	server := newServer()
 	go server.ListenAndServe()
-	defer server.Close()
 
 	// given
 	body := strings.NewReader(`{"document_number": "12345678900"}`)
@@ -73,7 +70,6 @@ func TestAPI_POST_Accounts(t *testing.T) {
 func TestAPI_GET_Accounts(t *testing.T) {
 	server := newServer()
 	go server.ListenAndServe()
-	defer server.Close()
 
 	// scenario
 	body := strings.NewReader(`{"document_number": "12345678900"}`)
@@ -98,7 +94,6 @@ func TestAPI_GET_Accounts(t *testing.T) {
 func TestAPI_POST_Transactions(t *testing.T) {
 	server := newServer()
 	go server.ListenAndServe()
-	defer server.Close()
 
 	// scenario
 	body := strings.NewReader(`{"document_number": "12345678900"}`)

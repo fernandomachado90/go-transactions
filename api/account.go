@@ -66,6 +66,7 @@ func (api *API) handleFindAccount() http.HandlerFunc {
 		if err != nil {
 			return
 		}
+
 		response := accountJSON{
 			ID:             account.ID,
 			DocumentNumber: account.DocumentNumber,
