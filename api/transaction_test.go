@@ -14,7 +14,7 @@ import (
 
 func TestHandleCreateTransaction(t *testing.T) {
 	// setup
-	db := new(dbMock)
+	db := core.NewDatabaseMock()
 	transactionManager := core.NewTransactionManager(db)
 	server := API{transactionManager: transactionManager}
 

@@ -49,7 +49,7 @@ func TestCreateTransaction(t *testing.T) {
 				OperationID: 4,
 				Amount:      123.45,
 			}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("FindOperation", input.OperationID).Return(true, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(1, nil)
@@ -73,7 +73,7 @@ func TestCreateTransaction(t *testing.T) {
 				OperationID: 3,
 				Amount:      123.45,
 			}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("FindOperation", input.OperationID).Return(false, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(1, nil)
@@ -93,7 +93,7 @@ func TestCreateTransaction(t *testing.T) {
 		"Should not create account because of missing required attribute": func(t *testing.T) {
 			//given
 			input := Transaction{}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			transactionManager := NewTransactionManager(db)
 
 			// when
@@ -110,7 +110,7 @@ func TestCreateTransaction(t *testing.T) {
 				OperationID: 4,
 				Amount:      123.45,
 			}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("FindOperation", input.OperationID).Return(true, nil)
 			db.On("CreateTransaction", mock.AnythingOfType("Transaction")).
 				Return(0, errors.New("database error"))

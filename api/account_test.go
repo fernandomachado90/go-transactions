@@ -13,7 +13,7 @@ import (
 
 func TestHandleCreateAccount(t *testing.T) {
 	// setup
-	db := new(dbMock)
+	db := core.NewDatabaseMock()
 	accountManager := core.NewAccountManager(db)
 	server := API{accountManager: accountManager}
 
@@ -65,7 +65,7 @@ func TestHandleCreateAccount(t *testing.T) {
 
 func TestHandleFindAccount(t *testing.T) {
 	// setup
-	db := new(dbMock)
+	db := core.NewDatabaseMock()
 	accountManager := core.NewAccountManager(db)
 	server := API{accountManager: accountManager}
 

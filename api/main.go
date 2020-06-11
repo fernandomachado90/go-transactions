@@ -15,7 +15,7 @@ const address = ":8080"
 
 func newServer() *http.Server {
 	log.Printf("Starting database")
-	db, err := database.NewDatabase()
+	db, err := database.NewSQLite()
 	if err != nil {
 		log.Fatalf("Failed to initalize Database. %s", err)
 	}

@@ -41,7 +41,7 @@ func TestCreateAccount(t *testing.T) {
 			input := Account{
 				DocumentNumber: "1234567890",
 			}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("CreateAccount", input).Return(rand.Int(), nil)
 			accountManager := NewAccountManager(db)
 
@@ -56,7 +56,7 @@ func TestCreateAccount(t *testing.T) {
 		"Should not create account because of missing required attribute": func(t *testing.T) {
 			//given
 			input := Account{}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			accountManager := NewAccountManager(db)
 
 			// when
@@ -71,7 +71,7 @@ func TestCreateAccount(t *testing.T) {
 			input := Account{
 				DocumentNumber: "1234567890",
 			}
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("CreateAccount", input).Return(0, errors.New("database error"))
 			accountManager := NewAccountManager(db)
 
@@ -96,7 +96,7 @@ func TestFindAccount(t *testing.T) {
 		"Should find account successfully": func(t *testing.T) {
 			//given
 			input := rand.Int()
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("FindAccount", input).Return(strconv.Itoa(rand.Int()), nil)
 			accountManager := NewAccountManager(db)
 
@@ -111,7 +111,7 @@ func TestFindAccount(t *testing.T) {
 		"Should not find account and return error": func(t *testing.T) {
 			//given
 			input := rand.Int()
-			db := new(dbMock)
+			db := NewDatabaseMock()
 			db.On("FindAccount", input).Return(strconv.Itoa(rand.Int()), errors.New("error"))
 			accountManager := NewAccountManager(db)
 

@@ -6,6 +6,10 @@ type dbMock struct {
 	mock.Mock
 }
 
+func NewDatabaseMock() *dbMock {
+	return new(dbMock)
+}
+
 func (db *dbMock) CreateAccount(account Account) (Account, error) {
 	args := db.Called(account)
 	id := args.Int(0)

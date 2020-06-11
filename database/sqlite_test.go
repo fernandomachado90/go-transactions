@@ -12,7 +12,7 @@ func TestNewDatabase(t *testing.T) {
 	tests := map[string]func(*testing.T){
 		"Should create a new database": func(t *testing.T) {
 			// when
-			db, err := NewDatabase()
+			db, err := NewSQLite()
 
 			// then
 			assert.NoError(t, err)
@@ -29,7 +29,7 @@ func TestNewDatabase(t *testing.T) {
 
 func TestCreateAccount(t *testing.T) {
 	// setup
-	db, _ := NewDatabase()
+	db, _ := NewSQLite()
 
 	tests := map[string]func(*testing.T){
 		"Should create a new account": func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestCreateAccount(t *testing.T) {
 
 func TestFindAccount(t *testing.T) {
 	// setup
-	db, _ := NewDatabase()
+	db, _ := NewSQLite()
 
 	tests := map[string]func(*testing.T){
 		"Should find account": func(t *testing.T) {
@@ -93,7 +93,7 @@ func TestFindAccount(t *testing.T) {
 
 func TestCreateTransaction(t *testing.T) {
 	// setup
-	db, _ := NewDatabase()
+	db, _ := NewSQLite()
 	_, _ = db.CreateAccount(core.Account{
 		DocumentNumber: "1234567890",
 	})
@@ -146,7 +146,7 @@ func TestCreateTransaction(t *testing.T) {
 
 func TestFindOperation(t *testing.T) {
 	// setup
-	db, _ := NewDatabase()
+	db, _ := NewSQLite()
 
 	tests := map[string]func(*testing.T){
 		"Should find COMPRA A VISTA operation": func(t *testing.T) {
